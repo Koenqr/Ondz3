@@ -20,25 +20,25 @@ y0 = np.array([x[1] for x in data0]) - 90
 z0 = np.array([x[2] for x in data0])
 xi0, yi0 = np.meshgrid(np.unique(x0), np.unique(y0))
 zi0 = ax0.tricontourf(x0, y0, z0, levels=100, cmap="turbo", vmin=vmin, vmax=vmax)
-ax0.set_title("s-polarization")
+ax0.set_title("s-polarisatie")
 
 x90 = np.array([x[0] for x in data90])
 y90 = np.array([x[1] for x in data90]) - 90
 z90 = np.array([x[2] for x in data90])
 xi90, yi90 = np.meshgrid(np.unique(x90), np.unique(y90))
 zi90 = ax90.tricontourf(x90, y90, z90, levels=100, cmap="turbo", vmin=vmin, vmax=vmax)
-ax90.set_title("p-polarization")
+ax90.set_title("p-polarisatie")
 
 #colorbar
 cbar = fig.colorbar(zi0, ax=axs, orientation='vertical')
-cbar.set_label("ADC reading (V)")
+cbar.set_label("ADC lezing (V)")
 
 #set axis labels (shared between subplots)
 #ax0.set_xlabel(r"Incident angle $(\degree)$")
 #ax0.set_ylabel(r"Detector angle $(\degree)$")
 #ax90.set_xlabel(r"Incident angle $(\degree)$")
 
-fig.supxlabel(r"Incident angle $(\degree)$")
-fig.supylabel(r"Detector angle $(\degree)$")
+fig.supxlabel(r"Invals hoek $(\degree)$")
+fig.supylabel(r"Detector hoek $(\degree)$")
 
 plt.show()

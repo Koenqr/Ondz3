@@ -115,10 +115,10 @@ y90 = np.array([point[1] for point in points90])-90
 yerr90 = np.array([point[2] for point in points90])
 y0=y0-y0[0] #centering due to incident angle and exit angle being 0 at 0 degrees
 y90=y90-y90[0]
-ax0.errorbar(x0, y0, xerr=xerr, yerr=yerr0, fmt=".", label="s-polarization")
-ax90.errorbar(x90, y90, xerr=xerr, yerr=yerr90, fmt=".", label="p-polarization")
-ax0.set_title("s-polarization")
-ax90.set_title("p-polarization")
+ax0.errorbar(x0, y0, xerr=xerr, yerr=yerr0, fmt=".", label="s-polarisatie")
+ax90.errorbar(x90, y90, xerr=xerr, yerr=yerr90, fmt=".", label="p-polarisatie")
+ax0.set_title("s-polarisatie")
+ax90.set_title("p-polarisatie")
 
 
 #fit snellius law
@@ -144,15 +144,15 @@ print("-------------------------------------------")
 #plot fit
 x = np.linspace(0, 75, 100)
 y = result0.eval(x=x)
-ax0.plot(x, y, color=(255/255, 0/255, 255/255), label=f"Snellius law fit (n={result0.params['n'].value:.3f} $\pm$ {result0.params['n'].stderr:.3f})")
+ax0.plot(x, y, color=(255/255, 0/255, 255/255), label=f"Snellius fit (n={result0.params['n'].value:.3f} $\pm$ {result0.params['n'].stderr:.3f})")
 y = result90.eval(x=x)
-ax90.plot(x, y, color=(255/255, 0/255, 255/255), label=f"Snellius law fit (n={result90.params['n'].value:.3f} $\pm$ {result90.params['n'].stderr:.3f})")
+ax90.plot(x, y, color=(255/255, 0/255, 255/255), label=f"Snellius fit (n={result90.params['n'].value:.3f} $\pm$ {result90.params['n'].stderr:.3f})")
 
 ax0.legend()
 ax90.legend()
 
-fig.supxlabel(r"Incident angle $(\degree)$")
-fig.supylabel(r"Exit angle $(\degree)$")
+fig.supxlabel(r"Hoek van inval $(\degree)$")
+fig.supylabel(r"Hoek van uitval $(\degree)$")
 
 plt.tight_layout()
 plt.show()
