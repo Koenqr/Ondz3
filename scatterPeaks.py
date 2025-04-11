@@ -9,6 +9,10 @@ import dataImporter
 
 data0, data90 = dataImporter.getData()
 
+
+def zTestFromFitResult(fitResult, mu, param="n"):
+    return (fitResult.params[param].value-mu)/(fitResult.params[param].stderr*np.sqrt(fitResult.ndata))
+
 #setup lmfit model for gaussian
 def gaussian(x:float, amp, cen, wid, yo):
 	"""Gaussian function."""
@@ -149,10 +153,21 @@ ax0.plot(x, y, color=(255/255, 0/255, 255/255), label=f"Snellius fit (n={result0
 y = result90.eval(x=x)
 ax90.plot(x, y, color=(255/255, 0/255, 255/255), label=f"Snellius fit (n={result90.params['n'].value:.3f} $\pm$ {result90.params['n'].stderr:.3f})")
 
+#calculate z-test (n theoretical = 1,457)
+z0 = zTestFromFitResult(result0, 1.457)
+z90 = zTestFromFitResult(result90, 1.457)
+zboth = zTestFromFitResult(result, 1.457)
+print(f"z-test s-polarisatie: {z0:.3f}")
+print(f"z-test p-polarisatie: {z90:.3f}")
+print(f"z-test both: {zboth:.3f}")
+
+
+
+
 ax0.legend()
 ax90.legend()
 
-fig.supxlabel(r"Hoek van inval $(\degree)$")
+fig.supxlabel(r"Incidentie hoek $(\degree)$")
 fig.supylabel(r"Hoek van uitval $(\degree)$")
 
 plt.tight_layout()
@@ -176,7 +191,7 @@ def opticWrapper(p, theta, n2, n1=1):
 
 
 
-pNoiseBackground = 0.1
+pNoiseBackground = 0#.1
 	
 
 
@@ -208,11 +223,12 @@ def fitOpticalModel(x, y, pOrs, nOptic, weight=None):
 	model = lmfit.Model(opticWrapper, independent_vars=['theta'], param_names=['n2', 'p'])
 	# Set the initial parameter values
 	params = model.make_params(n2=nOptic, p=pOrs)
+	params['n2'].set(value=nOptic, vary=True, min=1.0, max=2.0) #n2 is the refractive index of the material
 	#force pOrS to be True or False
 	params['p'].set(value=pOrs, vary=False)
 	# Fit the model to the data
-
-	result = model.fit(y, params, theta=x, weights=weight)
+	emcee_kwargs = dict(steps=1000, burn=500, thin=10)
+	result = model.fit(y, params, theta=x, weights=weight,method='emcee', fit_kws=emcee_kwargs)
 	return result
 
 result0 = fitOpticalModel(np.radians([point[0] for point in points0]), [point[3] + point[4] for point in points0]/maxval0, True, nOptic, weight=[point[5] + point[6] for point in points0]/maxval0 + pNoiseBackground/maxval0)
@@ -222,6 +238,11 @@ print(result0.fit_report())
 print("Optical model fit results (p-polarisatie):")
 print(result90.fit_report())
 
+#z-test for optical model
+z0 = zTestFromFitResult(result0, nOptic, param="n2")
+z90 = zTestFromFitResult(result90, nOptic, param="n2")
+print(f"z-test s-polarisatie: {z0:.3f}")
+print(f"z-test p-polarisatie: {z90:.3f}")
 
 #plot the optical model
 yp = result0.eval(theta=np.radians(x))
@@ -229,7 +250,7 @@ ys = result90.eval(theta=np.radians(x))
 ax.plot(x, yp, label='p-polarisatie (van optisch model)', color='red', linestyle=':')
 ax.plot(x, ys, label='s-polarisatie (van optisch model)', color='blue', linestyle=':')
 
-ax.set_xlabel(r"Hoek van inval $(\degree)$")
+ax.set_xlabel(r"Incidentie hoek $(\degree)$")
 ax.set_ylabel(r"Genormaliseerd vermogen (a.u.)")
 ax.legend()
 plt.tight_layout()

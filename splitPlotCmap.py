@@ -38,7 +38,7 @@ cbar.set_label("ADC lezing (V)")
 #ax0.set_ylabel(r"Detector angle $(\degree)$")
 #ax90.set_xlabel(r"Incident angle $(\degree)$")
 
-fig.supxlabel(r"Invals hoek $(\degree)$")
+fig.supxlabel(r"Incidentie hoek $(\degree)$")
 fig.supylabel(r"Detector hoek $(\degree)$")
 
 plt.show()
